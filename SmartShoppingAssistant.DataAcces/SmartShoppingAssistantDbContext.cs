@@ -18,7 +18,6 @@ namespace SmartShoppingAssistant.DataAcces
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(SmartShoppingAssistantDbContext).Assembly);
         }
 
     }

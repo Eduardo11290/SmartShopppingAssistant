@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: 06bb9c7f-fa31-46d2-8b68-82d142eb5df8
+
+localResources:
+  specs:
+    - ..\SmartShoppingAssistant.Api\obj\Debug\net10.0\EndpointInfo\SmartShoppingAssistant.Api.json

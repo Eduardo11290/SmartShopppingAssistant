@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartShoppingAssistant.DataAcces.Entities
+namespace SmartShoppingAssistant.BusinessLogic.DTOs
 {
-    public class Product
+    public class ProductCreateDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string ImageUrl { get; set; } = null!;
         public decimal Price { get; set; }
-        public ICollection<Category> Categories { get; set; } = new List<Category>();
-        public ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
-
     }
 }

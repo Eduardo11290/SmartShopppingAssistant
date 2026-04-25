@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartShoppingAssistant.BussinessLogic\SmartShoppingAssistant.BussinessLogic.csproj" />
-    <ProjectReference Include="..\SmartShoppingAssistant.DataAcces\SmartShoppingAssistant.DataAcces.csproj" />
+    <ProjectReference Include="..\SmartShoppingAssistant.BussinessLogic\SmartShoppingAssistant.BusinessLogic.csproj" />
+    <ProjectReference Include="..\SmartShoppingAssistant.DataAcces\SmartShoppingAssistant.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

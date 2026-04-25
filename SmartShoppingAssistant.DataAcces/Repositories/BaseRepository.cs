@@ -37,9 +37,11 @@ namespace SmartShoppingAssistant.DataAcces.Repositories
             
            
         }
-        public Task<TEntity> AddAsync(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await _context.Set<TEntity>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task DeleteAsync(int id)
@@ -58,22 +60,20 @@ namespace SmartShoppingAssistant.DataAcces.Repositories
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while deleting the entity: {ex.Message}");
-        }
-        }
-
-        public Task<List<TEntity>> GetAllAsync()
-        {
-            throw new NotImplementedException();
+            }
         }
 
-        public Task<TEntity> GetTaskAsync(int id)
+        public async Task<List<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public Task<TEntity> UpdateAsync(TEntity entity)
+
+        public async Task<TEntity> UpdateAsync(TEntity entity )
         {
-            throw new NotImplementedException();
+            _context.Set<TEntity>().Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

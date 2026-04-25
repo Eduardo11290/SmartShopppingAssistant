@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartShoppingAssistant.DataAcces\SmartShoppingAssistant.DataAcces.csproj" />
+    <ProjectReference Include="..\SmartShoppingAssistant.DataAcces\SmartShoppingAssistant.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

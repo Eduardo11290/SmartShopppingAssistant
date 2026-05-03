@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SmartShoppingAssistant.BusinessLogic.DTOs;
-using SmartShoppingAssistant.BussinessLogic.DTOs;
+using SmartShoppingAssistant.BusinessLogic.DTOs.Product;
 using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
 
 namespace SmartShoppingAssistant.Api.Controllers
@@ -25,16 +24,16 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductGetDTO>>> GetAll()
+        public async Task<ActionResult<List<ProductGetDTO>>> GetAll([FromQuery] ProductFilterDTO filter)
         {
             try
             {
-                var products = await productService.GetAllAsync();
+                var products = await productService.GetAllAsync(filter);
                 return Ok(products);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

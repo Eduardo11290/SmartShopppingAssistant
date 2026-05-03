@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartShoppingAssistant.DataAcces;
 
@@ -10,9 +11,11 @@ using SmartShoppingAssistant.DataAcces;
 namespace SmartShoppingAssistant.DataAcces.Migrations
 {
     [DbContext(typeof(SmartShoppingAssistantDbContext))]
-    partial class SmartShoppingAssistantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502140426_FixCategoryConfiguration")]
+    partial class FixCategoryConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItem", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("SmartShoppingAssistant.DataAcces.Entities.Category", b =>
@@ -66,17 +69,16 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("SmartShoppingAssistant.DataAcces.Entities.Product", b =>
@@ -126,8 +128,7 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
@@ -139,8 +140,7 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Threshold")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -151,7 +151,7 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Promotions", (string)null);
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>
@@ -184,13 +184,11 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
                 {
                     b.HasOne("SmartShoppingAssistant.DataAcces.Entities.Category", "Category")
                         .WithMany("Promotions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("SmartShoppingAssistant.DataAcces.Entities.Product", "Product")
                         .WithMany("Promotions")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("Category");
 

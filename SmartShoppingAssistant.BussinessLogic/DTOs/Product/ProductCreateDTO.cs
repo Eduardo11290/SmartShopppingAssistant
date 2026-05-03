@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartShoppingAssistant.BusinessLogic.DTOs
+namespace SmartShoppingAssistant.BusinessLogic.DTOs.Product
 {
-    public class ProductUpdateDTO
+    public class ProductCreateDTO
     {
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;

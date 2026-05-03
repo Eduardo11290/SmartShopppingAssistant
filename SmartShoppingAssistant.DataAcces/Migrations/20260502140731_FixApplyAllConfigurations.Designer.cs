@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartShoppingAssistant.DataAcces;
 
@@ -10,9 +11,11 @@ using SmartShoppingAssistant.DataAcces;
 namespace SmartShoppingAssistant.DataAcces.Migrations
 {
     [DbContext(typeof(SmartShoppingAssistantDbContext))]
-    partial class SmartShoppingAssistantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502140731_FixApplyAllConfigurations")]
+    partial class FixApplyAllConfigurations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,6 +69,7 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 

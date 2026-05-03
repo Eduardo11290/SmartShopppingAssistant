@@ -1,63 +1,60 @@
-﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
-using SmartShoppingAssistant.BussinessLogic.DTOs;
+﻿using SmartShoppingAssistant.BusinessLogic.DTOs.Product;
+using SmartShoppingAssistant.BusinessLogic.Mappers;
 using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.DataAcces.Entities;
 using SmartShoppingAssistant.DataAcces.Repositories;
+using SmartShoppingAssistant.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SmartShoppingAssistant.BussinessLogic.Services
 {
-    public class ProductService(IRepository<Product> productRepository) : IProductService
+    public class ProductService(
+    IRepository<Product> productRepository,
+    IProductRepository productRepositoryWithCategories) : IProductService
     {
         public async Task<ProductGetDTO> GetByIdAsync(int id)
         {
-            var product = await productRepository.GetByIdAsync(id);
-            return new ProductGetDTO
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                ImageUrl = product.ImageUrl,
-                Price = product.Price
-            };
-
+            var product = await productRepositoryWithCategories.GetByIdWithCategoriesAsync(id);
+            return ProductMapper.ToGetDTO(product);
         }
-        public async Task<List<ProductGetDTO>> GetAllAsync()
+
+        public async Task<List<ProductGetDTO>> GetAllAsync(ProductFilterDTO filter)
         {
-            var products = await productRepository.GetAllAsync();
-            return products.Select(product => new ProductGetDTO
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                ImageUrl = product.ImageUrl,
-                Price = product.Price
-            }).ToList();
+            var products = await productRepositoryWithCategories.GetAllWithCategoriesAsync();
 
+            if (filter.CategoryId.HasValue)
+                products = products
+                    .Where(p => p.Categories.Any(c => c.Id == filter.CategoryId.Value))
+                    .ToList();
+
+            if (!string.IsNullOrWhiteSpace(filter.Name))
+                products = products
+                    .Where(p => p.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+            if (filter.MinPrice.HasValue)
+                products = products
+                    .Where(p => p.Price >= filter.MinPrice.Value)
+                    .ToList();
+
+            if (filter.MaxPrice.HasValue)
+                products = products
+                    .Where(p => p.Price <= filter.MaxPrice.Value)
+                    .ToList();
+
+            return products.Select(ProductMapper.ToGetDTO).ToList();
         }
+
         public async Task<ProductGetDTO> AddAsync(ProductCreateDTO productCreateDTO)
         {
-            var product = new Product
-            {
-                Name = productCreateDTO.Name,
-                Description = productCreateDTO.Description,
-                ImageUrl = productCreateDTO.ImageUrl,
-                Price = productCreateDTO.Price
-            };
-
+            var product = ProductMapper.ToEntity(productCreateDTO);
             var created = await productRepository.AddAsync(product);
-
-            return new ProductGetDTO
-            {
-                Id = created.Id,
-                Name = created.Name,
-                Description = created.Description,
-                ImageUrl = created.ImageUrl,
-                Price = created.Price
-            };
+            var withCategories = await productRepositoryWithCategories.GetByIdWithCategoriesAsync(created.Id);
+            return ProductMapper.ToGetDTO(withCategories);
         }
+
         public async Task<ProductGetDTO> UpdateAsync(int id, ProductUpdateDTO productUpdateDTO)
         {
             var product = await productRepository.GetByIdAsync(id);
@@ -67,17 +64,11 @@ namespace SmartShoppingAssistant.BussinessLogic.Services
             product.ImageUrl = productUpdateDTO.ImageUrl;
             product.Price = productUpdateDTO.Price;
 
-            var updated = await productRepository.UpdateAsync(product);
-
-            return new ProductGetDTO
-            {
-                Id = updated.Id,
-                Name = updated.Name,
-                Description = updated.Description,
-                ImageUrl = updated.ImageUrl,
-                Price = updated.Price
-            };
+            await productRepository.UpdateAsync(product);
+            var withCategories = await productRepositoryWithCategories.GetByIdWithCategoriesAsync(id);
+            return ProductMapper.ToGetDTO(withCategories);
         }
+
         public async Task DeleteAsync(int id)
         {
             await productRepository.DeleteAsync(id);

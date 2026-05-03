@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using SmartShoppingAssistant.BusinessLogic.Services;
+using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.BussinessLogic.Services;
 using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.DataAcces;
 using SmartShoppingAssistant.DataAcces.Entities;
 using SmartShoppingAssistant.DataAcces.Repositories;
+using SmartShoppingAssistant.DataAccess.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,22 @@ builder.Services.AddDbContext<SmartShoppingAssistantDbContext>(options => option
 builder.Services.AddScoped<IRepository<Product>, BaseRepository<Product>>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddScoped<IRepository<Category>, BaseRepository<Category>>();
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<IRepository<Promotion>, BaseRepository<Promotion>>();
+
+builder.Services.AddScoped<IPromotionService, PromotionService>();
+
+builder.Services.AddScoped<IRepository<CartItem>, BaseRepository<CartItem>>();
+
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+builder.Services.AddScoped<ICartService, CartService>();
 
 var app = builder.Build();
 

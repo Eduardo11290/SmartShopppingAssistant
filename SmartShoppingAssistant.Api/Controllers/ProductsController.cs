@@ -5,10 +5,21 @@ using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
 
 namespace SmartShoppingAssistant.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProductsController(IProductService productService) : ControllerBase
     {
+        [HttpGet]
+        public async Task<ActionResult<List<ProductGetDTO>>> GetAll(
+            [FromQuery] int? categoryId,
+            [FromQuery] string? name,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice)
+        {
+            var products = await productService.GetAllAsync(categoryId, name, minPrice, maxPrice);
+            return Ok(products);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductGetDTO>> GetById(int id)
         {
@@ -23,39 +34,19 @@ namespace SmartShoppingAssistant.Api.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<ProductGetDTO>>> GetAll([FromQuery] ProductFilterDTO filter)
+        [HttpPost]
+        public async Task<ActionResult<ProductGetDTO>> Create([FromBody] ProductCreateDTO dto)
         {
-            try
-            {
-                var products = await productService.GetAllAsync(filter);
-                return Ok(products);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var product = await productService.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ProductGetDTO>> Add(ProductCreateDTO productCreateDTO)
-        {
-            try
-            {
-                var product = await productService.AddAsync(productCreateDTO);
-                return Ok(product);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductGetDTO>> Update(int id, ProductUpdateDTO productUpdateDTO)
+        public async Task<ActionResult<ProductGetDTO>> Update(int id, [FromBody] ProductUpdateDTO dto)
         {
             try
             {
-                var product = await productService.UpdateAsync(id, productUpdateDTO);
+                var product = await productService.UpdateAsync(id, dto);
                 return Ok(product);
             }
             catch (Exception ex)
@@ -63,13 +54,14 @@ namespace SmartShoppingAssistant.Api.Controllers
                 return NotFound(ex.Message);
             }
         }
+
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await productService.DeleteAsync(id);
-                return Ok();
+                return NoContent();
             }
             catch (Exception ex)
             {

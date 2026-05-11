@@ -11,37 +11,30 @@ namespace SmartShoppingAssistant.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<CartGetDTO>> GetCart()
         {
-            try
-            {
-                var cart = await cartService.GetCartAsync();
-                return Ok(cart);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var cart = await cartService.GetCartAsync();
+            return Ok(cart);
         }
 
         [HttpPost("items")]
-        public async Task<ActionResult<CartItemGetDTO>> AddItem(CartItemCreateDTO cartItemCreateDTO)
+        public async Task<ActionResult<CartItemGetDTO>> AddItem([FromBody] AddCartItemDTO dto)
         {
             try
             {
-                var item = await cartService.AddItemAsync(cartItemCreateDTO);
+                var item = await cartService.AddItemAsync(dto);
                 return Ok(item);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 
         [HttpPut("items/{itemId}")]
-        public async Task<ActionResult<CartItemGetDTO>> UpdateItem(int itemId, CartItemUpdateDTO cartItemUpdateDTO)
+        public async Task<ActionResult<CartItemGetDTO>> UpdateItem(int itemId, [FromBody] CartItemUpdateDTO dto)
         {
             try
             {
-                var item = await cartService.UpdateItemAsync(itemId, cartItemUpdateDTO);
+                var item = await cartService.UpdateItemAsync(itemId, dto);
                 return Ok(item);
             }
             catch (Exception ex)
@@ -51,12 +44,12 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpDelete("items/{itemId}")]
-        public async Task<ActionResult> DeleteItem(int itemId)
+        public async Task<IActionResult> RemoveItem(int itemId)
         {
             try
             {
-                await cartService.DeleteItemAsync(itemId);
-                return Ok();
+                await cartService.RemoveItemAsync(itemId);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -65,17 +58,10 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> ClearCart()
+        public async Task<IActionResult> ClearCart()
         {
-            try
-            {
-                await cartService.ClearCartAsync();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await cartService.ClearCartAsync();
+            return NoContent();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SmartShoppingAssistant.BusinessLogic.DTOs.Product
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public decimal Price { get; set; }
-        public List<CategoryGetDTO> Categories { get; set; } = new List<CategoryGetDTO>();
+        public List<string> Categories { get; set; } = new();
 
     }
 }

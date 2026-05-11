@@ -3,13 +3,14 @@ using SmartShoppingAssistant.BusinessLogic.Mappers;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.DataAcces.Entities;
 using SmartShoppingAssistant.DataAcces.Repositories;
+using SmartShoppingAssistant.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services
 {
-    public class CategoryService(IRepository<Category> categoryRepository) : ICategoryService
+    public class CategoryService(ICategoryRepository categoryRepository) : ICategoryService
     {
         public async Task<CategoryGetDTO> GetByIdAsync(int id)
         {

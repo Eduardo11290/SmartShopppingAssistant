@@ -17,9 +17,7 @@ namespace SmartShoppingAssistant.BusinessLogic.Mappers
                 Description = product.Description,
                 ImageUrl = product.ImageUrl,
                 Price = product.Price,
-                Categories = product.Categories
-                    .Select(CategoryMapper.ToGetDTO)
-                    .ToList()
+                Categories = product.Categories.Select(c => c.Name).ToList()
             };
         }
 

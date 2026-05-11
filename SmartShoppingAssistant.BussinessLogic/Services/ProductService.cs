@@ -11,67 +11,54 @@ using System.Text;
 namespace SmartShoppingAssistant.BussinessLogic.Services
 {
     public class ProductService(
-    IRepository<Product> productRepository,
-    IProductRepository productRepositoryWithCategories) : IProductService
+        IProductRepository productRepository,
+        ICategoryRepository categoryRepository) : IProductService
     {
-        public async Task<ProductGetDTO> GetByIdAsync(int id)
+        public async Task<List<ProductGetDTO>> GetAllAsync(int? categoryId, string? name, decimal? minPrice, decimal? maxPrice)
         {
-            var product = await productRepositoryWithCategories.GetByIdWithCategoriesAsync(id);
-            return ProductMapper.ToGetDTO(product);
-        }
-
-        public async Task<List<ProductGetDTO>> GetAllAsync(ProductFilterDTO filter)
-        {
-            var products = await productRepositoryWithCategories.GetAllWithCategoriesAsync();
-
-            if (filter.CategoryId.HasValue)
-                products = products
-                    .Where(p => p.Categories.Any(c => c.Id == filter.CategoryId.Value))
-                    .ToList();
-
-            if (!string.IsNullOrWhiteSpace(filter.Name))
-                products = products
-                    .Where(p => p.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
-            if (filter.MinPrice.HasValue)
-                products = products
-                    .Where(p => p.Price >= filter.MinPrice.Value)
-                    .ToList();
-
-            if (filter.MaxPrice.HasValue)
-                products = products
-                    .Where(p => p.Price <= filter.MaxPrice.Value)
-                    .ToList();
-
+            var products = await productRepository.GetAllAsync(categoryId, name, minPrice, maxPrice);
             return products.Select(ProductMapper.ToGetDTO).ToList();
         }
 
-        public async Task<ProductGetDTO> AddAsync(ProductCreateDTO productCreateDTO)
+        public async Task<ProductGetDTO> GetByIdAsync(int id)
         {
-            var product = ProductMapper.ToEntity(productCreateDTO);
+            var product = await productRepository.GetByIdWithCategoriesAsync(id);
+            return ProductMapper.ToGetDTO(product);
+        }
+
+        public async Task<ProductGetDTO> CreateAsync(ProductCreateDTO dto)
+        {
+            var categories = await categoryRepository.GetByIdsAsync(dto.CategoryIds);
+            var product = new Product
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                ImageUrl = dto.ImageUrl,
+                Price = dto.Price,
+                Categories = categories
+            };
             var created = await productRepository.AddAsync(product);
-            var withCategories = await productRepositoryWithCategories.GetByIdWithCategoriesAsync(created.Id);
-            return ProductMapper.ToGetDTO(withCategories);
+            return ProductMapper.ToGetDTO(created);
         }
 
-        public async Task<ProductGetDTO> UpdateAsync(int id, ProductUpdateDTO productUpdateDTO)
+        public async Task<ProductGetDTO> UpdateAsync(int id, ProductUpdateDTO dto)
         {
-            var product = await productRepository.GetByIdAsync(id);
-
-            product.Name = productUpdateDTO.Name;
-            product.Description = productUpdateDTO.Description;
-            product.ImageUrl = productUpdateDTO.ImageUrl;
-            product.Price = productUpdateDTO.Price;
-
-            await productRepository.UpdateAsync(product);
-            var withCategories = await productRepositoryWithCategories.GetByIdWithCategoriesAsync(id);
-            return ProductMapper.ToGetDTO(withCategories);
+            var product = await productRepository.GetByIdWithCategoriesAsync(id);
+            product.Name = dto.Name;
+            product.Description = dto.Description;
+            product.ImageUrl = dto.ImageUrl;
+            product.Price = dto.Price;
+            product.Categories = await categoryRepository.GetByIdsAsync(dto.CategoryIds);
+            var updated = await productRepository.UpdateAsync(product);
+            return ProductMapper.ToGetDTO(updated);
         }
 
-        public async Task DeleteAsync(int id)
+        public Task DeleteAsync(int id) => productRepository.DeleteAsync(id);
+
+        public async Task<List<ProductGetDTO>> GetForProductAsync(int productId)
         {
-            await productRepository.DeleteAsync(id);
+            var products = await productRepository.GetByCategoryAsync(productId);
+            return products.Select(ProductMapper.ToGetDTO).ToList();
         }
     }
 }

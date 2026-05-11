@@ -1,14 +1,13 @@
 ﻿using SmartShoppingAssistant.DataAcces.Entities;
+using SmartShoppingAssistant.DataAcces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SmartShoppingAssistant.DataAccess.Repositories
 {
-    public interface ICartRepository
+    public interface ICategoryRepository : IRepository<Category>
     {
-        Task<List<CartItem>> GetAllWithProductsAsync();
-        Task<CartItem> GetItemWithProductAsync(int itemId);
-        Task ClearCartAsync();
+        Task<List<Category>> GetByIdsAsync(IEnumerable<int> ids);
     }
 }

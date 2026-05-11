@@ -11,52 +11,52 @@ using System.Text;
 namespace SmartShoppingAssistant.BusinessLogic.Services
 {
     public class CartService(
-        IRepository<CartItem> cartItemRepository,
-        ICartRepository cartRepository) : ICartService
+        ICartItemRepository cartItemRepository,
+        IProductRepository productRepository) : ICartService
     {
         public async Task<CartGetDTO> GetCartAsync()
         {
-            var items = await cartRepository.GetAllWithProductsAsync();
-            var itemDTOs = items.Select(CartMapper.ToGetDTO).ToList();
+            var items = await cartItemRepository.GetAllWithProductAsync();
+            return new CartGetDTO { Items = items.Select(MapToDTO).ToList() };
+        }
 
-            return new CartGetDTO
+        public async Task<CartItemGetDTO> AddItemAsync(AddCartItemDTO dto)
+        {
+            await productRepository.GetByIdAsync(dto.ProductId);
+
+            var existing = await cartItemRepository.GetByProductIdAsync(dto.ProductId);
+            if (existing != null)
             {
-                Items = itemDTOs,
-                Total = itemDTOs.Sum(i => i.TotalPrice)
-            };
+                existing.Quantity += dto.Quantity;
+                await cartItemRepository.UpdateAsync(existing);
+                return MapToDTO(existing);
+            }
+
+            var item = new CartItem { ProductId = dto.ProductId, Quantity = dto.Quantity };
+            await cartItemRepository.AddAsync(item);
+            var added = await cartItemRepository.GetByIdWithProductAsync(item.Id);
+            return MapToDTO(added);
         }
 
-        public async Task<CartItemGetDTO> AddItemAsync(CartItemCreateDTO cartItemCreateDTO)
+        public async Task<CartItemGetDTO> UpdateItemAsync(int itemId, CartItemUpdateDTO dto)
         {
-            var cartItem = new CartItem
-            {
-                ProductId = cartItemCreateDTO.ProductId,
-                Quantity = cartItemCreateDTO.Quantity
-            };
-
-            var created = await cartItemRepository.AddAsync(cartItem);
-            var withProduct = await cartRepository.GetItemWithProductAsync(created.Id);
-            return CartMapper.ToGetDTO(withProduct);
+            var item = await cartItemRepository.GetByIdWithProductAsync(itemId);
+            item.Quantity = dto.Quantity;
+            await cartItemRepository.UpdateAsync(item);
+            return MapToDTO(item);
         }
 
-        public async Task<CartItemGetDTO> UpdateItemAsync(int itemId, CartItemUpdateDTO cartItemUpdateDTO)
+        public Task RemoveItemAsync(int itemId) => cartItemRepository.DeleteAsync(itemId);
+
+        public Task ClearCartAsync() => cartItemRepository.ClearAsync();
+
+        private static CartItemGetDTO MapToDTO(CartItem ci) => new()
         {
-            var cartItem = await cartItemRepository.GetByIdAsync(itemId);
-            cartItem.Quantity = cartItemUpdateDTO.Quantity;
-
-            await cartItemRepository.UpdateAsync(cartItem);
-            var withProduct = await cartRepository.GetItemWithProductAsync(itemId);
-            return CartMapper.ToGetDTO(withProduct);
-        }
-
-        public async Task DeleteItemAsync(int itemId)
-        {
-            await cartItemRepository.DeleteAsync(itemId);
-        }
-
-        public async Task ClearCartAsync()
-        {
-            await cartRepository.ClearCartAsync();
-        }
+            Id = ci.Id,
+            ProductId = ci.ProductId,
+            ProductName = ci.Product.Name,
+            UnitPrice = ci.Product.Price,
+            Quantity = ci.Quantity
+        };
     }
 }

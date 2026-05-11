@@ -15,7 +15,7 @@ namespace SmartShoppingAssistant.BusinessLogic.Mappers
                 Id = cartItem.Id,
                 ProductId = cartItem.ProductId,
                 ProductName = cartItem.Product.Name,
-                ProductPrice = cartItem.Product.Price,
+                UnitPrice = cartItem.Product.Price,
                 Quantity = cartItem.Quantity,
                 TotalPrice = cartItem.Product.Price * cartItem.Quantity
             };

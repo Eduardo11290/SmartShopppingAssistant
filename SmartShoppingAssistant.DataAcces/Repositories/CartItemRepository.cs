@@ -35,5 +35,14 @@ namespace SmartShoppingAssistant.DataAccess.Repositories
             Context.CartItems.RemoveRange(Context.CartItems);
             await Context.SaveChangesAsync();
         }
+        private IQueryable<CartItem> WithProductWithCategories() =>
+            GetAllAsQueryable()
+                .Include(ci => ci.Product)
+                    .ThenInclude(p => p.Categories);
+
+        public async Task<List<CartItem>> GetAllWithProductWithCategoriesAsync()
+        {
+            return await WithProductWithCategories().ToListAsync(); 
+        }
     }
 }

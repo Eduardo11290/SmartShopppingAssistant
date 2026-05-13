@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
+using OpenAI;
+using SmartShoppingAssistant.BusinessLogic.Agents;
 using SmartShoppingAssistant.BusinessLogic.Services;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.BussinessLogic.Services;
@@ -18,6 +21,20 @@ builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("SmartShoppingAssistantContext");
 
+var openAiApiKey = builder.Configuration["OpenAI:ApiKey"]
+                   ?? throw new InvalidOperationException("OpenAI:ApiKey is not configured.");
+var openAiModel = builder.Configuration["OpenAI:ModelId"] ?? "gpt-4o";
+
+builder.Services.AddSingleton<IChatClient>(
+    new OpenAIClient(openAiApiKey)
+        .GetChatClient(openAiModel)
+        .AsIChatClient()
+        .AsBuilder()
+        .UseFunctionInvocation()
+        .Build());
+
+builder.Services.AddScoped<IPromotionCheckerAgent, PromotionCheckerAgent>();
+
 builder.Services.AddDbContext<SmartShoppingAssistantDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -35,6 +52,19 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 
 builder.Services.AddScoped<ICartService, CartService>();
+
+builder.Services.AddScoped<ISuggestionComposerAgent, SuggestionComposerAgent>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        corsPolicyBuilder =>
+        {
+            corsPolicyBuilder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 

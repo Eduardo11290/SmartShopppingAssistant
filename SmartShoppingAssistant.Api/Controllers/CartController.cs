@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OpenAI.Realtime;
+using SmartShoppingAssistant.BusinessLogic.Agents;
 using SmartShoppingAssistant.BusinessLogic.DTOs.Cart;
+using SmartShoppingAssistant.BusinessLogic.Models;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
+using System.Text.Json;
 
 namespace SmartShoppingAssistant.Api.Controllers
 {
     [ApiController]
     [Route("api/cart")]
-    public class CartController(ICartService cartService) : ControllerBase
+    public class CartController(
+        ICartService cartService) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult<CartGetDTO>> GetCart()
@@ -14,7 +19,7 @@ namespace SmartShoppingAssistant.Api.Controllers
             var cart = await cartService.GetCartAsync();
             return Ok(cart);
         }
-
+        
         [HttpPost("items")]
         public async Task<ActionResult<CartItemGetDTO>> AddItem([FromBody] AddCartItemDTO dto)
         {
@@ -62,6 +67,13 @@ namespace SmartShoppingAssistant.Api.Controllers
         {
             await cartService.ClearCartAsync();
             return NoContent();
+        }
+        [HttpPost(template: "analyze")]
+        public async Task<IActionResult> AnalyzeCart()
+        {
+            var analysisResposne = await cartService.AnalyzeCartAsync();
+            return Ok(analysisResposne);
+
         }
     }
 }

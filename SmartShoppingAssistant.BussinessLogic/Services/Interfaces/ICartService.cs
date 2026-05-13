@@ -1,4 +1,5 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs.Cart;
+using SmartShoppingAssistant.BusinessLogic.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,5 +13,7 @@ namespace SmartShoppingAssistant.BusinessLogic.Services.Interfaces
         Task<CartItemGetDTO> UpdateItemAsync(int itemId, CartItemUpdateDTO dto);
         Task RemoveItemAsync(int itemId);
         Task ClearCartAsync();
+
+        Task<AnalysisResponse> AnalyzeCartAsync();
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartShoppingAssistant.DataAcces;
 
@@ -10,9 +11,11 @@ using SmartShoppingAssistant.DataAcces;
 namespace SmartShoppingAssistant.DataAcces.Migrations
 {
     [DbContext(typeof(SmartShoppingAssistantDbContext))]
-    partial class SmartShoppingAssistantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260511202536_SeedInitialData")]
+    partial class SeedInitialData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,26 +100,6 @@ namespace SmartShoppingAssistant.DataAcces.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("CartItem", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 4,
-                            ProductId = 1,
-                            Quantity = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ProductId = 3,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ProductId = 5,
-                            Quantity = 3
-                        });
                 });
 
             modelBuilder.Entity("SmartShoppingAssistant.DataAcces.Entities.Category", b =>

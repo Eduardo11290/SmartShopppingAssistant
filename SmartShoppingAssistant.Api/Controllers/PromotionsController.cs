@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartShoppingAssistant.BusinessLogic.DTOs.Promotion;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 
@@ -30,6 +31,7 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PromotionGetDTO>> Create([FromBody] PromotionCreateDTO dto)
         {
             var promotion = await promotionService.AddAsync(dto);
@@ -37,6 +39,7 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PromotionGetDTO>> Update(int id, [FromBody] PromotionUpdateDTO dto)
         {
             try
@@ -51,6 +54,7 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

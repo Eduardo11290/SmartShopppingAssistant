@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OpenAI.Realtime;
-using SmartShoppingAssistant.BusinessLogic.Agents;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartShoppingAssistant.BusinessLogic.DTOs.Cart;
-using SmartShoppingAssistant.BusinessLogic.Models;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
-using System.Text.Json;
 
 namespace SmartShoppingAssistant.Api.Controllers
 {
     [ApiController]
     [Route("api/cart")]
-    public class CartController(
-        ICartService cartService) : ControllerBase
+    public class CartController(ICartService cartService) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult<CartGetDTO>> GetCart()
@@ -19,8 +15,16 @@ namespace SmartShoppingAssistant.Api.Controllers
             var cart = await cartService.GetCartAsync();
             return Ok(cart);
         }
-        
+
+        [HttpGet("analysis")]
+        public async Task<IActionResult> AnalyzeCart()
+        {
+            var analysis = await cartService.AnalyzeCartAsync();
+            return Ok(analysis);
+        }
+
         [HttpPost("items")]
+        [Authorize]
         public async Task<ActionResult<CartItemGetDTO>> AddItem([FromBody] AddCartItemDTO dto)
         {
             try
@@ -35,6 +39,7 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpPut("items/{itemId}")]
+        [Authorize]
         public async Task<ActionResult<CartItemGetDTO>> UpdateItem(int itemId, [FromBody] CartItemUpdateDTO dto)
         {
             try
@@ -49,6 +54,7 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpDelete("items/{itemId}")]
+        [Authorize]
         public async Task<IActionResult> RemoveItem(int itemId)
         {
             try
@@ -63,17 +69,11 @@ namespace SmartShoppingAssistant.Api.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> ClearCart()
         {
             await cartService.ClearCartAsync();
             return NoContent();
-        }
-        [HttpPost(template: "analyze")]
-        public async Task<IActionResult> AnalyzeCart()
-        {
-            var analysisResposne = await cartService.AnalyzeCartAsync();
-            return Ok(analysisResposne);
-
         }
     }
 }

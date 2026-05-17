@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartShoppingAssistant.DataAcces\SmartShoppingAssistant.DataAccess.csproj" />
+    <ProjectReference Include="..\SmartShoppingAssistant.DataAccess\SmartShoppingAssistant.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs.Promotion;
-using SmartShoppingAssistant.DataAcces.Entities;
+using SmartShoppingAssistant.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartShoppingAssistant.BussinessLogic.Services.Interfaces
+namespace SmartShoppingAssistant.BusinessLogic.Services.Interfaces
 {
     public interface IProductService
     {

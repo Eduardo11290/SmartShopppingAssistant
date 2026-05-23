@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartShoppingAssistant.BusinessLogic.DTOs.Product;
-using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
+using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 
 namespace SmartShoppingAssistant.Api.Controllers
 {

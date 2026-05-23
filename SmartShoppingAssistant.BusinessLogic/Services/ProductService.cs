@@ -1,14 +1,13 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs.Product;
 using SmartShoppingAssistant.BusinessLogic.Mappers;
-using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
+using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.DataAccess.Entities;
-using SmartShoppingAssistant.DataAccess.Repositories;
 using SmartShoppingAssistant.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartShoppingAssistant.BussinessLogic.Services
+namespace SmartShoppingAssistant.BusinessLogic.Services
 {
     public class ProductService(
         IProductRepository productRepository,

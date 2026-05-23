@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistant.BusinessLogic.DTOs.Auth;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.DataAccess.Entities;

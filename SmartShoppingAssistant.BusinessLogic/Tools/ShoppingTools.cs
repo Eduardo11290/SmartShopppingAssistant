@@ -1,7 +1,6 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs.Product;
 using SmartShoppingAssistant.BusinessLogic.DTOs.Promotion;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
-using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

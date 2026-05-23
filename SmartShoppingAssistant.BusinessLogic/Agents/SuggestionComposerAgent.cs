@@ -2,7 +2,7 @@
 using Microsoft.Extensions.AI;
 using SmartShoppingAssistant.BusinessLogic.Models;
 using SmartShoppingAssistant.BusinessLogic.Tools;
-using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
+using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

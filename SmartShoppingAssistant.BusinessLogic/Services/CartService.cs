@@ -7,7 +7,6 @@ using SmartShoppingAssistant.BusinessLogic.Models;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistant.DataAccess.Entities;
 using SmartShoppingAssistant.DataAccess.Repositories;
-using SmartShoppingAssistant.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;

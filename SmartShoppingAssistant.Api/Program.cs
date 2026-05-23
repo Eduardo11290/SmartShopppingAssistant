@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OpenAI;
+using SmartShoppingAssistant.Api;
 using SmartShoppingAssistant.BusinessLogic.Agents;
 using SmartShoppingAssistant.BusinessLogic.Services;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
-using SmartShoppingAssistant.BussinessLogic.Services;
-using SmartShoppingAssistant.BussinessLogic.Services.Interfaces;
+using SmartShoppingAssistant.BusinessLogic.Tools;
 using SmartShoppingAssistant.DataAccess;
 using SmartShoppingAssistant.DataAccess.Entities;
 using SmartShoppingAssistant.DataAccess.Repositories;
@@ -17,7 +18,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<JwtSecuritySchemeFilter>();
+});
 
 var connectionString = builder.Configuration.GetConnectionString("SmartShoppingAssistantContext");
 
@@ -66,6 +70,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<DatabaseSeeder>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -119,6 +124,11 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "SmartShoppingAssistant API v1");
+        options.RoutePrefix = "swagger";
+    });
 }
 
 app.UseHttpsRedirection();

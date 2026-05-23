@@ -1,5 +1,4 @@
-﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
-using SmartShoppingAssistant.BusinessLogic.DTOs.Auth;
+﻿using SmartShoppingAssistant.BusinessLogic.DTOs.Auth;
 using System;
 using System.Collections.Generic;
 using System.Text;

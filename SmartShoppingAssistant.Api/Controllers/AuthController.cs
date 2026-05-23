@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistant.BusinessLogic.DTOs.Auth;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 
